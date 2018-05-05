@@ -17,7 +17,7 @@ public class HelloController {
 		Jedis jedis = null;
 		String result = "";
 		try {
-			pool = new JedisPool(new JedisPoolConfig(), "redis", 6379, 10, "CpHe6TPt3ch1i8Gm");
+			pool = new JedisPool(new JedisPoolConfig(), "redis://redis", 6379, 10, "CpHe6TPt3ch1i8Gm");
 
 			jedis = pool.getResource();
 			long startTime = System.currentTimeMillis();
@@ -26,6 +26,7 @@ public class HelloController {
 			result = jedis.get("foo");
 			System.out.println("Execution time: " + (System.currentTimeMillis() - startTime));
 		} catch (Exception ex) {
+			ex.printStackTrace();
 		} finally {
 			pool.returnResource(jedis);
 			pool.close();
