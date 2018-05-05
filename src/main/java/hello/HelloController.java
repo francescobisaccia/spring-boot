@@ -32,8 +32,6 @@ public class HelloController {
 			pool.close();
 		}
 
-		pool.returnResource(jedis);
-		pool.close();
 		return ("result: " + result);
 
 	}
