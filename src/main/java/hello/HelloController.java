@@ -13,18 +13,27 @@ public class HelloController {
 	@RequestMapping("/")
 	public String index() {
 		System.out.println("Hello Francesco, greetings from Spring Boot !");
-		JedisPool pool = new JedisPool(new JedisPoolConfig(), "redis", 6379, 10, "CpHe6TPt3ch1i8Gm");
+		JedisPool pool = null;
+		Jedis jedis = null;
+		String result = "";
+		try {
+			pool = new JedisPool(new JedisPoolConfig(), "redis", 6379, 10, "CpHe6TPt3ch1i8Gm");
 
-		Jedis jedis = pool.getResource();
-		long startTime = System.currentTimeMillis();
+			jedis = pool.getResource();
+			long startTime = System.currentTimeMillis();
 
-		jedis.set("foo", "bar");
-		String foobar = jedis.get("foo");
-		System.out.println("Execution time: " + (System.currentTimeMillis() - startTime));
+			jedis.set("foo", "bar");
+			result = jedis.get("foo");
+			System.out.println("Execution time: " + (System.currentTimeMillis() - startTime));
+		} catch (Exception ex) {
+		} finally {
+			pool.returnResource(jedis);
+			pool.close();
+		}
 
 		pool.returnResource(jedis);
 		pool.close();
-		return ("foo: " + foobar);
+		return ("result: " + result);
 
 	}
 
