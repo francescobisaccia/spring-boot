@@ -3,10 +3,12 @@ package hello;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+
 import org.springframework.web.bind.annotation.RestController;
 
-import hello.HttpClientAdapter.HttpClientAdapterConfiguration;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -15,22 +17,15 @@ import redis.clients.jedis.JedisPoolConfig;
 public class HelloController {
 
 	private static final String DEFAULT_REDIS_HOST = "172.30.206.236";
-	private static final String targetUrl = "http://userprofile-ms-it-63.openshift.avs-accenture.com/avsbe-userprofile-ms/v1/users/USERNAME";
-	private static HttpClientAdapterConfiguration httpClientAdapterConfiguration = new HttpClientAdapterConfiguration();
 
-	@RequestMapping("/")
-	public String index() {
-		System.out.println("Hello Francesco, greetings from Spring Boot !");
+	@GET
+	@Path("/users")
+	public String getUserById(@PathParam("username") String username) {
+		System.out.println("Request received for username: " + username);
 		JedisPool pool = null;
 		Jedis jedis = null;
 		String result = "";
-		httpClientAdapterConfiguration.setTenantName("tenant1");
-		httpClientAdapterConfiguration.setConnectionTimeout(1000);
-		httpClientAdapterConfiguration.setSocketTimeout(1000);
-		String username = "test@mailinator.com";
-
 		try {
-
 			String hostname = DEFAULT_REDIS_HOST;
 			String redis_host = System.getenv("REDIS_HOST");
 			if (redis_host != null && !"".equals(redis_host)) {
@@ -49,7 +44,7 @@ public class HelloController {
 			if (result == null) {
 				Map<String, String> pathParamsMap = new HashMap<String, String>();
 				pathParamsMap.put("USERNAME", "test@mailinator.com");
-				result = HttpClientAdapter.doGet(httpClientAdapterConfiguration, targetUrl, null, pathParamsMap, null);
+				result = "{\"menu\": {\r\n  \"id\": \"file\",\r\n  \"value\": \"File\",\r\n  \"popup\": {\r\n    \"menuitem\": [\r\n      {\"value\": \"New\", \"onclick\": \"CreateNewDoc()\"},\r\n      {\"value\": \"Open\", \"onclick\": \"OpenDoc()\"},\r\n      {\"value\": \"Close\", \"onclick\": \"CloseDoc()\"}\r\n    ]\r\n  }\r\n}}";
 				System.out.println("GetUser response: " + result);
 				if (result != null && result.length() > 0) {
 					jedis.set(username, result);
