@@ -14,7 +14,7 @@ import redis.clients.jedis.JedisPoolConfig;
 @RestController
 public class HelloController {
 
-	private static final String DEFAULT_REDIS_HOST = "172.30.222.214";
+	private static final String DEFAULT_REDIS_HOST = "172.30.206.236";
 	private static final String targetUrl = "http://userprofile-ms-it-63.openshift.avs-accenture.com/avsbe-userprofile-ms/v1/users/USERNAME";
 	private static HttpClientAdapterConfiguration httpClientAdapterConfiguration = new HttpClientAdapterConfiguration();
 
